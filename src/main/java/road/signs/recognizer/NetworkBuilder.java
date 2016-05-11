@@ -1,91 +1,55 @@
 package road.signs.recognizer;
 
-import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import road.signs.recognizer.config.network.architecture.LayerConfiguration;
+import road.signs.recognizer.config.network.architecture.NetworkArchitecture;
 
 import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.Optional;
 
 /**
  * Created by Basia on 11.05.16.
  */
 public class NetworkBuilder {
 
-    public static NetworkBuilderLayerData INPUT_LAYER_FOR_200x200_PICTURE = new NetworkBuilderLayerData(40000);
-    public static NetworkBuilderLayerData OUTPUT_LAYER_FOR_4_TYPES_OF_PICTURES = new NetworkBuilderLayerData(4);
+    public static Optional<BasicNetwork> build(NetworkArchitecture data) {
+        Optional<BasicNetwork> networkOpt = Optional.empty();
+        if(isNetworkArchitectureValid(data)) {
+            networkOpt = Optional.of(createNetwork(data));
+        }
+        return networkOpt;
+    }
 
-    public static BasicNetwork build(NetworkBuilderData data) {
+    private static boolean isNetworkArchitectureValid(NetworkArchitecture data) {
+        return data != null && data.getInputLayer() != null && data.getOutputLayer() != null;
+    }
+
+    private static BasicNetwork createNetwork(NetworkArchitecture data) {
         BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(null, true, data.getInputLayer().getNumberOfNeurons()));
-        data.getHiddenLayers()
-                .forEach(layer -> network
-                        .addLayer(new BasicLayer(new ActivationSigmoid(), true, layer.getNumberOfNeurons())
-                        ));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, data.getOutputLayer().getNumberOfNeurons()));
+
+        network.addLayer(createInputLayer(data.getInputLayer()));
+        createHiddenLayers(data.getHiddenLayers(), network);
+        network.addLayer(createOutputLayer(data.getOutputLayer()));
+
         network.getStructure().finalizeStructure();
         network.reset();
         return network;
     }
 
-    //boilerplate code
-    public static class NetworkBuilderData{
-        private NetworkBuilderLayerData inputLayer;
-        private NetworkBuilderLayerData outputLayer;
-        private List<NetworkBuilderLayerData> hiddenLayers = newArrayList();
-
-        public NetworkBuilderData(NetworkBuilderLayerData inputLayer, NetworkBuilderLayerData outputLayer, List<NetworkBuilderLayerData> hiddenLayers) {
-            this.inputLayer = inputLayer;
-            this.outputLayer = outputLayer;
-            this.hiddenLayers = hiddenLayers;
-        }
-
-        public NetworkBuilderData(NetworkBuilderLayerData inputLayer, NetworkBuilderLayerData outputLayer) {
-            this.inputLayer = inputLayer;
-            this.outputLayer = outputLayer;
-        }
-
-        public NetworkBuilderLayerData getInputLayer() {
-
-            return inputLayer;
-        }
-
-        public void setInputLayer(NetworkBuilderLayerData inputLayer) {
-            this.inputLayer = inputLayer;
-        }
-
-        public NetworkBuilderLayerData getOutputLayer() {
-            return outputLayer;
-        }
-
-        public void setOutputLayer(NetworkBuilderLayerData outputLayer) {
-            this.outputLayer = outputLayer;
-        }
-
-        public List<NetworkBuilderLayerData> getHiddenLayers() {
-            return hiddenLayers;
-        }
-
-        public void setHiddenLayers(List<NetworkBuilderLayerData> hiddenLayers) {
-            this.hiddenLayers = hiddenLayers;
-        }
+    private static BasicLayer createInputLayer(LayerConfiguration inputLayer) {
+        return new BasicLayer(null, true, inputLayer.getNumberOfNeurons());
     }
 
-    public static class NetworkBuilderLayerData {
-        int numberOfNeurons;
+    private static void createHiddenLayers(List<LayerConfiguration> hiddenLayers, BasicNetwork network) {
+        hiddenLayers.forEach(
+                layer -> network.addLayer(
+                        new BasicLayer(layer.getActivationFunction().getInstance(), true, layer.getNumberOfNeurons())
+                ));
+    }
 
-        public NetworkBuilderLayerData(int numberOfNeurons) {
-            this.numberOfNeurons = numberOfNeurons;
-        }
-
-        public int getNumberOfNeurons() {
-            return numberOfNeurons;
-        }
-
-        public void setNumberOfNeurons(int numberOfNeurons) {
-            this.numberOfNeurons = numberOfNeurons;
-        }
+    private static BasicLayer createOutputLayer(LayerConfiguration outputLayerData) {
+        return new BasicLayer(outputLayerData.getActivationFunction().getInstance(), true, outputLayerData.getNumberOfNeurons());
     }
 
 }

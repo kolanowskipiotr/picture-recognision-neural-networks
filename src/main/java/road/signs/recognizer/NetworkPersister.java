@@ -6,6 +6,7 @@ import org.encog.util.obj.SerializeObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Created by Basia on 11.05.16.
@@ -26,13 +27,11 @@ public class NetworkPersister {
         }
     }
 
-    public static void loadAndEvaluate(MLDataSet trainingSet) {
+    public static Optional<BasicNetwork> loadAndEvaluate(String networkFilePath) {
         System.out.println("Loading network");
-        BasicNetwork network = null;
+        Optional<BasicNetwork> network = Optional.empty();
         try {
-            network = (BasicNetwork) SerializeObject.load(new File(FILENAME));
-            double e = network.calculateError(trainingSet);
-            System.out.println("Loaded network's error is(should be same as above): " + e);
+            network = Optional.ofNullable((BasicNetwork) SerializeObject.load(new File(networkFilePath)));
         } catch (IOException e) {
             System.out.println("Restoring network FAILED!");
             e.printStackTrace();
@@ -40,5 +39,7 @@ public class NetworkPersister {
             System.out.println("Restoring network FAILED!");
             e.printStackTrace();
         }
+
+        return network;
     }
 }

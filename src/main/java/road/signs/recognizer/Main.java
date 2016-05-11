@@ -1,17 +1,14 @@
 package road.signs.recognizer;
 
-import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.StringUtils;
 import org.encog.Encog;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.persist.EncogPersistor;
-import org.encog.util.obj.SerializeObject;
+import road.signs.recognizer.config.ApplicationConfiguration;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.Optional;
 
 import static road.signs.recognizer.TrainingSetBuilder.*;
 
@@ -22,23 +19,38 @@ public class Main {
 
     public static void main(String[] args) {
 
-        BasicNetwork network = NetworkBuilder.build(
-                new NetworkBuilder.NetworkBuilderData(
-                        NetworkBuilder.INPUT_LAYER_FOR_200x200_PICTURE,
-                        NetworkBuilder.OUTPUT_LAYER_FOR_4_TYPES_OF_PICTURES
-                        //,ImmutableList.of(new NetworkBuilder.NetworkBuilderLayerData(200))
-                ));
+        Optional<ApplicationConfiguration> appConfigOpt = ConfigurationService.loadConfiguration();
+        if(appConfigOpt.isPresent()) {
+            ApplicationConfiguration appConfig = appConfigOpt.get();
 
-        MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet();
-        NetworkTrainer.train(network, trainingSet, NetworkTrainer.DEFAULT_ERROR_LEVEL);
+            Optional<BasicNetwork> networkOpt = getNetwork(appConfig);
 
-        MLDataSet testingSet = TrainingSetBuilder.buildTestingSet();
-        testingSet.forEach(queryData -> askNetwork(network, queryData));
+            if(networkOpt.isPresent()) {
+                BasicNetwork network = networkOpt.get();
+                MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet();
+                NetworkTrainer.train(network, trainingSet, NetworkTrainer.DEFAULT_ERROR_LEVEL);
 
-        NetworkPersister.persistNetwork(network, trainingSet);
-        NetworkPersister.loadAndEvaluate(trainingSet);
-        
+                MLDataSet testingSet = TrainingSetBuilder.buildTestingSet();
+                testingSet.forEach(queryData -> askNetwork(network, queryData));
+
+                NetworkPersister.persistNetwork(network, trainingSet);
+            }
+        } else{
+            ConfigurationService.saveConfiguration(new ApplicationConfiguration());
+        }
+
+        ConfigurationService.saveConfiguration(new ApplicationConfiguration());
         Encog.getInstance().shutdown();
+    }
+
+    private static Optional<BasicNetwork> getNetwork(ApplicationConfiguration appConfig) {
+        Optional<BasicNetwork> networkOpt = null;
+        if(StringUtils.isNoneBlank(appConfig.getLoadNetworkPath())) {
+            networkOpt = NetworkPersister.loadAndEvaluate(appConfig.getLoadNetworkPath());
+        } else {
+            networkOpt = NetworkBuilder.build(appConfig.getNetworkArchitecture());
+        }
+        return networkOpt;
     }
 
 
