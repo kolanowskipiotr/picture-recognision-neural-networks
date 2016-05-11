@@ -20,31 +20,41 @@ public class TrainingSetBuilder {
 
 
     private static final String PATH_TO_TRAINING_DATA_FOLDER = "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set";
-    private static final List<String> INPUT_DATA = ImmutableList.of(
+    private static final List<String> INPUT_DATA_TRAINING = ImmutableList.of(
             //stop
             PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\1.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\2.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\3.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\4.bmp",
+            //PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\4.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\5.bmp",
             //zakaz zawracania ciężarówek
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\1.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\2.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\3.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\4.bmp",
+            //PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\4.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\5.bmp",
             // zakaz wjazdu
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\1.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\2.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\3.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\4.bmp",
+            //PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\4.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\5.bmp",
             // zakaz wjazdu motocykli
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\1.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\2.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\3.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\4.bmp",
+            //PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\4.bmp",
             PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\5.bmp"
+    );
+    private static final List<String> INPUT_DATA_TESTING = ImmutableList.of(
+            //stop
+            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\4.bmp",
+            //zakaz zawracania ciężarówek
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\4.bmp",
+            // zakaz wjazdu
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\4.bmp",
+            // zakaz wjazdu motocykli
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\4.bmp"
     );
 
     public static final int STOP_OUTPUT_PICK_INDEX = 0;
@@ -52,35 +62,53 @@ public class TrainingSetBuilder {
     public static final int NO_ENTER_OUTPUT_PICK_INDEX = 2;
     public static final int NO_ENTER_FOR_MOTORCYCLES_OUTPUT_PICK_INDEX = 3;
 
-    private static final double[][] IDEAL = {
+    private static final double[][] IDEAL_TRAINING = {
             //stop
             {1.0, 0.0, 0.0, 0.0},
             {1.0, 0.0, 0.0, 0.0},
             {1.0, 0.0, 0.0, 0.0},
             {1.0, 0.0, 0.0, 0.0},
-            {1.0, 0.0, 0.0, 0.0},
+            //{1.0, 0.0, 0.0, 0.0},
             //zakaz wiazdu ciężarówek
             {0.0, 1.0, 0.0, 0.0},
             {0.0, 1.0, 0.0, 0.0},
             {0.0, 1.0, 0.0, 0.0},
             {0.0, 1.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0, 0.0},
+            //{0.0, 1.0, 0.0, 0.0},
             // zakaz wjazdu
             {0.0, 0.0, 1.0, 0.0},
             {0.0, 0.0, 1.0, 0.0},
             {0.0, 0.0, 1.0, 0.0},
             {0.0, 0.0, 1.0, 0.0},
-            {0.0, 0.0, 1.0, 0.0},
+            //{0.0, 0.0, 1.0, 0.0},
             // zakaz wjazdu motocykli
             {0.0, 0.0, 0.0, 1.0},
             {0.0, 0.0, 0.0, 1.0},
             {0.0, 0.0, 0.0, 1.0},
-            {0.0, 0.0, 0.0, 1.0},
+            {0.0, 0.0, 0.0, 1.0}//,
+            //{0.0, 0.0, 0.0, 1.0}
+    };
+    private static final double[][] IDEAL_TESTING = {
+            //stop
+            {1.0, 0.0, 0.0, 0.0},
+            //zakaz wiazdu ciężarówek
+            {0.0, 1.0, 0.0, 0.0},
+            // zakaz wjazdu
+            {0.0, 0.0, 1.0, 0.0},
+            // zakaz wjazdu motocykli
             {0.0, 0.0, 0.0, 1.0}
     };
 
-    public static BasicMLDataSet build(){
-        List<double[]> readedPictures = INPUT_DATA.stream()
+    public static BasicMLDataSet buildTestingSet(){
+        return build(INPUT_DATA_TESTING, IDEAL_TESTING);
+    }
+
+    public static BasicMLDataSet buildTrainingSet(){
+        return build(INPUT_DATA_TRAINING, IDEAL_TRAINING);
+    }
+
+    private static BasicMLDataSet build(List<String> inputData, double[][] ideal){
+        List<double[]> readedPictures = inputData.stream()
                 .map(File::new)
                 .map(TrainingSetBuilder::readImage)
                 .map(TrainingSetBuilder::convertTo2DWithoutUsingGetRGB)
@@ -88,7 +116,7 @@ public class TrainingSetBuilder {
                 .map(TrainingSetBuilder::convertToDoublesAndShrinkValues)
                 .collect(Collectors.toList());
 
-        return new BasicMLDataSet(to2dArray(readedPictures), IDEAL);
+        return new BasicMLDataSet(to2dArray(readedPictures), ideal);
     }
 
     private static BufferedImage readImage(File file) {

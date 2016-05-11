@@ -1,18 +1,10 @@
 package road.signs.recognizer;
 
-import com.google.common.primitives.Doubles;
 import org.encog.Encog;
-import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.plugin.system.SystemActivationPlugin;
-
-import java.util.Arrays;
 
 import static road.signs.recognizer.TrainingSetBuilder.*;
 
@@ -29,10 +21,12 @@ public class Main {
                         NetworkBuilder.INPUT_LAYER_FOR_200x200_PICTURE,
                         NetworkBuilder.OUTPUT_LAYER_FOR_4_TYPES_OF_PICTURES
                 ));
-        MLDataSet trainingSet = build();
+        MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet();
         NetworkTrainer.train(network, trainingSet, NetworkTrainer.DEFAULT_ERROR_LEVEL);
 
-        trainingSet.forEach(queryData -> askNetwork(network, queryData));
+
+        MLDataSet testingSet = TrainingSetBuilder.buildTestingSet();
+        testingSet.forEach(queryData -> askNetwork(network, queryData));
 
         Encog.getInstance().shutdown();
     }
@@ -45,7 +39,7 @@ public class Main {
                     + round(output.getData(1)) + " "
                     + round(output.getData(2)) + " "
                     + round(output.getData(3))
-                + "\n , should respond= "
+                + "\n , should respond ["+ signTyoe(queryData.getIdeal().getData()) +"] = "
                     + queryData.getIdeal().getData(0) + " "
                     + queryData.getIdeal().getData(1) + " "
                     + queryData.getIdeal().getData(2) + " "
