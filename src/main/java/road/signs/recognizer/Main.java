@@ -1,5 +1,6 @@
 package road.signs.recognizer;
 
+import com.google.common.collect.ImmutableList;
 import org.encog.Encog;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -20,6 +21,7 @@ public class Main {
                 new NetworkBuilder.NetworkBuilderData(
                         NetworkBuilder.INPUT_LAYER_FOR_200x200_PICTURE,
                         NetworkBuilder.OUTPUT_LAYER_FOR_4_TYPES_OF_PICTURES
+                        //,ImmutableList.of(new NetworkBuilder.NetworkBuilderLayerData(200))
                 ));
         MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet();
         NetworkTrainer.train(network, trainingSet, NetworkTrainer.DEFAULT_ERROR_LEVEL);
@@ -33,13 +35,13 @@ public class Main {
 
     private static void askNetwork(BasicNetwork network, MLDataPair queryData) {
         final MLData output = network.compute(queryData.getInput());
-        System.out.println("recognize this: "
-                + "\n , network response ["+ signTyoe(output.getData()) +"] = "
+        System.out.println("Test: "
+                + "\n    network response ["+ signTyoe(output.getData()) +"] = "
                     + round(output.getData(0)) + " "
                     + round(output.getData(1)) + " "
                     + round(output.getData(2)) + " "
                     + round(output.getData(3))
-                + "\n , should respond ["+ signTyoe(queryData.getIdeal().getData()) +"] = "
+                + "\n    should respond ["+ signTyoe(queryData.getIdeal().getData()) +"] = "
                     + queryData.getIdeal().getData(0) + " "
                     + queryData.getIdeal().getData(1) + " "
                     + queryData.getIdeal().getData(2) + " "
