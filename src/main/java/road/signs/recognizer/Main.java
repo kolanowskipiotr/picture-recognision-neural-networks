@@ -20,9 +20,6 @@ import static road.signs.recognizer.TrainingSetBuilder.*;
  */
 public class Main {
 
-
-    private static final String FILENAME = "encogexample.ser";
-
     public static void main(String[] args) {
 
         BasicNetwork network = NetworkBuilder.build(
@@ -31,45 +28,19 @@ public class Main {
                         NetworkBuilder.OUTPUT_LAYER_FOR_4_TYPES_OF_PICTURES
                         //,ImmutableList.of(new NetworkBuilder.NetworkBuilderLayerData(200))
                 ));
+
         MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet();
         NetworkTrainer.train(network, trainingSet, NetworkTrainer.DEFAULT_ERROR_LEVEL);
 
         MLDataSet testingSet = TrainingSetBuilder.buildTestingSet();
         testingSet.forEach(queryData -> askNetwork(network, queryData));
 
-
-        persistNetwork(network, trainingSet);
-        loadAndEvaluate(trainingSet);
+        NetworkPersister.persistNetwork(network, trainingSet);
+        NetworkPersister.loadAndEvaluate(trainingSet);
         
         Encog.getInstance().shutdown();
     }
 
-    private static void persistNetwork(BasicNetwork network, MLDataSet trainingSet){
-        double e = network.calculateError(trainingSet);
-        System.out.println("Network traiined to error: " + e);
-        System.out.println("Saving network");
-        try {
-            SerializeObject.save(new File(FILENAME), network);
-        } catch (IOException e1) {
-            System.out.println("Saving network FAILED!");
-            e1.printStackTrace();
-        }
-    }
-    public static void loadAndEvaluate(MLDataSet trainingSet) {
-        System.out.println("Loading network");
-        BasicNetwork network = null;
-        try {
-            network = (BasicNetwork) SerializeObject.load(new File(FILENAME));
-            double e = network.calculateError(trainingSet);
-            System.out.println("Loaded network's error is(should be same as above): " + e);
-        } catch (IOException e) {
-            System.out.println("Restoring network FAILED!");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Restoring network FAILED!");
-            e.printStackTrace();
-        }
-    }
 
     private static void askNetwork(BasicNetwork network, MLDataPair queryData) {
         final MLData output = network.compute(queryData.getInput());
