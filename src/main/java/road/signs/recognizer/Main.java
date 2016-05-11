@@ -18,28 +18,11 @@ import java.util.Arrays;
  */
 public class Main {
 
-    /**
-     * TheinputnecessaryforXOR.
-     */
-    public static double XORINPUT[][] = {
-            {0.0, 0.0},
-            {1.0, 0.0},
-            {0.0, 1.0},
-            {1.0, 1.0}};
-    /**
-     * TheidealdatanecessaryforXOR.
-     */
-    public static double XORIDEAL[][] = {
-            {0.0},
-            {1.0},
-            {1.0},
-            {0.0}};
-
 
     public static void main(String[] args) {
 
         BasicNetwork network = buildNetwork();
-        MLDataSet trainingSet = buildTraingSet();
+        MLDataSet trainingSet = TrainingSetBuilder.build();
         ResilientPropagation trainer = builtNetworkTrainer(network, trainingSet);
 
         trainNetwork(trainer);
@@ -51,21 +34,25 @@ public class Main {
 
     private static void askNetwork(BasicNetwork network, MLDataPair queryData) {
         final MLData output = network.compute(queryData.getInput());
-        System.out.println("XOR this: " + queryData.getInput().getData(0) + " , " + queryData.getInput().getData(1)
-                + "\n , network responded=" + output.getData(0)
-                + "\n , should respond=" + queryData.getIdeal().getData(0));
+        System.out.println("recognize this: "
+                + "\n , network responded=" + output.getData(0) + " " + output.getData(1)
+                + "\n , should respond=" + queryData.getIdeal().getData(0) + " " + queryData.getIdeal().getData(1));
 
     }
 
     private static void trainNetwork(ResilientPropagation trainer) {
         double[] results = {1.0, 1.0, 1.0};
         int epoch = 1;
+        double errorLevel = 0.01;
         do {
             trainer.iteration();
             displayTrainingErrorLevel(epoch, trainer.getError());
             epoch++;
             results[epoch%3] = trainer.getError();
-        } while (results[0] > 0.01 || results[1] > 0.01 || results[2] > 0.01);
+        } while (results[0] > errorLevel ||
+                results[1] > errorLevel ||
+                results[2] > errorLevel);
+
         trainer.finishTraining();
     }
 
@@ -77,15 +64,11 @@ public class Main {
         return new ResilientPropagation(network, trainingSet);
     }
 
-    private static BasicMLDataSet buildTraingSet() {
-        return new BasicMLDataSet(XORINPUT, XORIDEAL);
-    }
-
     private static BasicNetwork buildNetwork() {
         BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(null, true, 2));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 3));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 1));
+        network.addLayer(new BasicLayer(null, true, 40000));
+        //network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 5));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 2));
         network.getStructure().finalizeStructure();
         network.reset();
         return network;
