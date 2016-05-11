@@ -1,6 +1,7 @@
 package road.signs.recognizer.config;
 
 import road.signs.recognizer.config.network.architecture.NetworkArchitecture;
+import road.signs.recognizer.config.testing.TestingData;
 import road.signs.recognizer.config.training.TrainingData;
 
 /**
@@ -8,10 +9,15 @@ import road.signs.recognizer.config.training.TrainingData;
  */
 public class ApplicationConfiguration {
 
+    //jeśli to pole jest puste to sieć będzie zbudowana na podstawie podanej architektury umieszczonej w networkArchitecture;
+    private String loadNetworkPath;
     private NetworkArchitecture networkArchitecture = new NetworkArchitecture();
-    private String loadNetworkPath; //;= "encogexample.ser";
     private boolean saveNetwork;
+
+    //Jeśli nei będzie tych danych to aplikacja nie będzie trenować sieci. Pozwala to na pominięcie tego kroku
     private TrainingData trainingData = new TrainingData();
+
+    //Jeśli nei będzie tych danych to aplikacja nie będzie testować sieci. Pozwala to na pominięcie tego kroku
     private TestingData testingData = new TestingData();
 
     public boolean isSaveNetwork() {

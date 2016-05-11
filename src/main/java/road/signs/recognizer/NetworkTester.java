@@ -5,7 +5,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import road.signs.recognizer.config.ApplicationConfiguration;
-import road.signs.recognizer.config.TestingData;
+import road.signs.recognizer.config.testing.TestingData;
 
 import java.util.List;
 import java.util.Optional;

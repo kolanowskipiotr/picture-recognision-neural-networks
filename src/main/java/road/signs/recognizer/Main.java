@@ -23,7 +23,7 @@ public class Main {
                 workWithNetwork(appConfigOpt.get(), networkOpt.get());
             } else {
 
-                System.out.println("[ERROR] ntwork load or creation failed!");
+                System.out.println("[ERROR] Network load or creation failed!");
             }
         } else{
 

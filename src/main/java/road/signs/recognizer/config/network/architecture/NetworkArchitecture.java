@@ -8,8 +8,11 @@ import static com.google.common.collect.Lists.newArrayList;
  * Created by Basia on 11.05.16.
  */
 public class NetworkArchitecture {
-    private LayerConfiguration inputLayer = new LayerConfiguration(40000, null);
-    private LayerConfiguration outputLayer = new LayerConfiguration(4, ActivationFunctionType.ActivationSigmoid);
+    //domyślnie używałem wartości = new LayerConfiguration(40000, null) jeśli obrazek 200x200 to 40000 neuronów
+    // wejściowe zawsze mają null w activationFunction
+    private LayerConfiguration inputLayer;
+    //domyślnie używałem wartości = new LayerConfiguration(4, ActivationFunctionType.ActivationSigmoid)
+    private LayerConfiguration outputLayer;
     private List<LayerConfiguration> hiddenLayers = newArrayList();
 
     public LayerConfiguration getInputLayer() {
