@@ -30,6 +30,7 @@ public class ConfigurationService {
     }
 
     public static Optional<ApplicationConfiguration> loadConfiguration(){
+        System.out.println("Loading config");
         try {
             String json = FileUtils.readFileToString(new File(SETUP_CFG_FILE_PATH), SETUP_CGF_FILE_ENCODING);
             return Optional.ofNullable(new Gson().fromJson(json, ApplicationConfiguration.class));

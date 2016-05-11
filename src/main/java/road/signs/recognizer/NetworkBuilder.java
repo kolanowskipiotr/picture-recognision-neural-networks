@@ -14,9 +14,13 @@ import java.util.Optional;
 public class NetworkBuilder {
 
     public static Optional<BasicNetwork> build(NetworkArchitecture data) {
+        System.out.println("Building network");
+
         Optional<BasicNetwork> networkOpt = Optional.empty();
         if(isNetworkArchitectureValid(data)) {
             networkOpt = Optional.of(createNetwork(data));
+        }else{
+            dislayValidationError();
         }
         return networkOpt;
     }
@@ -50,6 +54,10 @@ public class NetworkBuilder {
 
     private static BasicLayer createOutputLayer(LayerConfiguration outputLayerData) {
         return new BasicLayer(outputLayerData.getActivationFunction().getInstance(), true, outputLayerData.getNumberOfNeurons());
+    }
+
+    private static void dislayValidationError() {
+        System.out.println("[Error] NetworkArchitecture not valid!");
     }
 
 }

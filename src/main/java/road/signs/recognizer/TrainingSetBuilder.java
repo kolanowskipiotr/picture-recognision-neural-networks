@@ -1,8 +1,8 @@
 package road.signs.recognizer;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Ints;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import road.signs.recognizer.config.training.TrainingPair;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -18,93 +18,12 @@ import java.util.stream.Collectors;
  */
 public class TrainingSetBuilder {
 
-
-    private static final String PATH_TO_TRAINING_DATA_FOLDER = "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set";
-    private static final List<String> INPUT_DATA_TRAINING = ImmutableList.of(
-            //stop
-            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\1.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\2.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\3.bmp",
-            //PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\4.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\5.bmp",
-            //zakaz zawracania ciężarówek
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\1.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\2.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\3.bmp",
-            //PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\4.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\5.bmp",
-            // zakaz wjazdu
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\1.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\2.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\3.bmp",
-            //PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\4.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\5.bmp",
-            // zakaz wjazdu motocykli
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\1.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\2.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\3.bmp",
-            //PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\4.bmp",
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\5.bmp"
-    );
-    private static final List<String> INPUT_DATA_TESTING = ImmutableList.of(
-            //stop
-            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\4.bmp",
-            //zakaz zawracania ciężarówek
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\4.bmp",
-            // zakaz wjazdu
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\4.bmp",
-            // zakaz wjazdu motocykli
-            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\4.bmp"
-    );
-
-    public static final int STOP_OUTPUT_PICK_INDEX = 0;
-    public static final int NO_ENER_FOR_TRUCKS_OUTPUT_PICK_INDEX = 1;
-    public static final int NO_ENTER_OUTPUT_PICK_INDEX = 2;
-    public static final int NO_ENTER_FOR_MOTORCYCLES_OUTPUT_PICK_INDEX = 3;
-
-    private static final double[][] IDEAL_TRAINING = {
-            //stop
-            {1.0, 0.0, 0.0, 0.0},
-            {1.0, 0.0, 0.0, 0.0},
-            {1.0, 0.0, 0.0, 0.0},
-            {1.0, 0.0, 0.0, 0.0},
-            //{1.0, 0.0, 0.0, 0.0},
-            //zakaz wiazdu ciężarówek
-            {0.0, 1.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0, 0.0},
-            //{0.0, 1.0, 0.0, 0.0},
-            // zakaz wjazdu
-            {0.0, 0.0, 1.0, 0.0},
-            {0.0, 0.0, 1.0, 0.0},
-            {0.0, 0.0, 1.0, 0.0},
-            {0.0, 0.0, 1.0, 0.0},
-            //{0.0, 0.0, 1.0, 0.0},
-            // zakaz wjazdu motocykli
-            {0.0, 0.0, 0.0, 1.0},
-            {0.0, 0.0, 0.0, 1.0},
-            {0.0, 0.0, 0.0, 1.0},
-            {0.0, 0.0, 0.0, 1.0}//,
-            //{0.0, 0.0, 0.0, 1.0}
-    };
-    private static final double[][] IDEAL_TESTING = {
-            //stop
-            {1.0, 0.0, 0.0, 0.0},
-            //zakaz wiazdu ciężarówek
-            {0.0, 1.0, 0.0, 0.0},
-            // zakaz wjazdu
-            {0.0, 0.0, 1.0, 0.0},
-            // zakaz wjazdu motocykli
-            {0.0, 0.0, 0.0, 1.0}
-    };
-
-    public static BasicMLDataSet buildTestingSet(){
-        return build(INPUT_DATA_TESTING, IDEAL_TESTING);
+    public static BasicMLDataSet buildTestingSet(List<TrainingPair> testingData){
+        return build(getInputData(testingData), getIdealData(testingData));
     }
 
-    public static BasicMLDataSet buildTrainingSet(){
-        return build(INPUT_DATA_TRAINING, IDEAL_TRAINING);
+    public static BasicMLDataSet buildTrainingSet(List<TrainingPair> trainingData){
+        return build(getInputData(trainingData), getIdealData(trainingData));
     }
 
     private static BasicMLDataSet build(List<String> inputData, double[][] ideal){
@@ -195,5 +114,17 @@ public class TrainingSetBuilder {
         double[][] matrix=new double[list.size()][];
         matrix=list.toArray(matrix);
         return matrix;
+    }
+
+    private static double[][] getIdealData(List<TrainingPair> trainingData) {
+        return to2dArray(trainingData.stream()
+                .map(TrainingPair::getIdeal)
+                .collect(Collectors.toList()));
+    }
+
+    private static List<String> getInputData(List<TrainingPair> trainingData) {
+        return trainingData.stream()
+                .map(TrainingPair::getImagePath)
+                .collect(Collectors.toList());
     }
 }
