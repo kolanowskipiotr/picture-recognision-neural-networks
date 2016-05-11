@@ -1,5 +1,6 @@
 package road.signs.recognizer;
 
+import com.google.common.primitives.Doubles;
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLData;
@@ -13,6 +14,8 @@ import org.encog.plugin.system.SystemActivationPlugin;
 
 import java.util.Arrays;
 
+import static road.signs.recognizer.TrainingSetBuilder.*;
+
 /**
  * CreatedbyBasiaon10.05.16.
  */
@@ -21,11 +24,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        BasicNetwork network = buildNetwork();
-        MLDataSet trainingSet = TrainingSetBuilder.build();
-        ResilientPropagation trainer = builtNetworkTrainer(network, trainingSet);
-
-        trainNetwork(trainer);
+        BasicNetwork network = NetworkBuilder.build(
+                new NetworkBuilder.NetworkBuilderData(
+                        NetworkBuilder.INPUT_LAYER_FOR_200x200_PICTURE,
+                        NetworkBuilder.OUTPUT_LAYER_FOR_4_TYPES_OF_PICTURES
+                ));
+        MLDataSet trainingSet = build();
+        NetworkTrainer.train(network, trainingSet, NetworkTrainer.DEFAULT_ERROR_LEVEL);
 
         trainingSet.forEach(queryData -> askNetwork(network, queryData));
 
@@ -35,42 +40,48 @@ public class Main {
     private static void askNetwork(BasicNetwork network, MLDataPair queryData) {
         final MLData output = network.compute(queryData.getInput());
         System.out.println("recognize this: "
-                + "\n , network responded=" + output.getData(0) + " " + output.getData(1)
-                + "\n , should respond=" + queryData.getIdeal().getData(0) + " " + queryData.getIdeal().getData(1));
-
+                + "\n , network response ["+ signTyoe(output.getData()) +"] = "
+                    + round(output.getData(0)) + " "
+                    + round(output.getData(1)) + " "
+                    + round(output.getData(2)) + " "
+                    + round(output.getData(3))
+                + "\n , should respond= "
+                    + queryData.getIdeal().getData(0) + " "
+                    + queryData.getIdeal().getData(1) + " "
+                    + queryData.getIdeal().getData(2) + " "
+                    + queryData.getIdeal().getData(3));
     }
 
-    private static void trainNetwork(ResilientPropagation trainer) {
-        double[] results = {1.0, 1.0, 1.0};
-        int epoch = 1;
-        double errorLevel = 0.01;
-        do {
-            trainer.iteration();
-            displayTrainingErrorLevel(epoch, trainer.getError());
-            epoch++;
-            results[epoch%3] = trainer.getError();
-        } while (results[0] > errorLevel ||
-                results[1] > errorLevel ||
-                results[2] > errorLevel);
+    private static String signTyoe(double[] data) {
+        int indexOfPick = Integer.MIN_VALUE;
+        double loclMax = Double.MIN_VALUE;
+        for(int i = 0; i < data.length; i++){
+            if(loclMax < data[i]){
+                loclMax = data[i];
+                indexOfPick = i;
+            }
+        }
 
-        trainer.finishTraining();
+        switch (indexOfPick){
+            case STOP_OUTPUT_PICK_INDEX:{
+                return "Stop";
+            }
+            case NO_ENER_FOR_TRUCKS_OUTPUT_PICK_INDEX:{
+                return "Zakaz wjazdu dla ciężarówek";
+            }
+            case NO_ENTER_FOR_MOTORCYCLES_OUTPUT_PICK_INDEX:{
+                return "Zakaz wjazdu dla motocykli";
+            }
+            case NO_ENTER_OUTPUT_PICK_INDEX:{
+                return "Zakaz wjazdu";
+            }
+            default:{
+                return "Nie udało się określić";
+            }
+        }
     }
 
-    private static void displayTrainingErrorLevel(int epoch, double error) {
-        System.out.println("Epoch #" + epoch + " Error: " + error);
-    }
-
-    private static ResilientPropagation builtNetworkTrainer(BasicNetwork network, MLDataSet trainingSet) {
-        return new ResilientPropagation(network, trainingSet);
-    }
-
-    private static BasicNetwork buildNetwork() {
-        BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(null, true, 40000));
-        //network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 5));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 2));
-        network.getStructure().finalizeStructure();
-        network.reset();
-        return network;
+    private static double round(double number) {
+        return Math.round(number * 1000d) / 1000d;
     }
 }

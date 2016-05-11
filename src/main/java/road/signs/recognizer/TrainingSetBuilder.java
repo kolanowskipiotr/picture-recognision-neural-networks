@@ -19,56 +19,76 @@ import java.util.stream.Collectors;
 public class TrainingSetBuilder {
 
 
+    private static final String PATH_TO_TRAINING_DATA_FOLDER = "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set";
     private static final List<String> INPUT_DATA = ImmutableList.of(
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\S_00\\1.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\S_00\\2.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\S_00\\3.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\S_00\\4.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\S_00\\5.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\ZWC_00\\1.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\ZWC_00\\2.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\ZWC_00\\3.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\ZWC_00\\4.bmp",
-            "C:\\Users\\Basia\\IdeaProjects\\road signs recognizer\\learning_set\\ZWC_00\\5.bmp"
+            //stop
+            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\1.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\2.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\3.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\4.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\S_00\\5.bmp",
+            //zakaz zawracania ciężarówek
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\1.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\2.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\3.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\4.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWC_00\\5.bmp",
+            // zakaz wjazdu
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\1.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\2.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\3.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\4.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZW_00\\5.bmp",
+            // zakaz wjazdu motocykli
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\1.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\2.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\3.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\4.bmp",
+            PATH_TO_TRAINING_DATA_FOLDER + "\\ZWM_00\\5.bmp"
     );
+
+    public static final int STOP_OUTPUT_PICK_INDEX = 0;
+    public static final int NO_ENER_FOR_TRUCKS_OUTPUT_PICK_INDEX = 1;
+    public static final int NO_ENTER_OUTPUT_PICK_INDEX = 2;
+    public static final int NO_ENTER_FOR_MOTORCYCLES_OUTPUT_PICK_INDEX = 3;
+
     private static final double[][] IDEAL = {
-            {1.0, 0.0},
-            {1.0, 0.0},
-            {1.0, 0.0},
-            {1.0, 0.0},
-            {1.0, 0.0},
-            {0.0, 1.0},
-            {0.0, 1.0},
-            {0.0, 1.0},
-            {0.0, 1.0},
-            {0.0, 1.0}
+            //stop
+            {1.0, 0.0, 0.0, 0.0},
+            {1.0, 0.0, 0.0, 0.0},
+            {1.0, 0.0, 0.0, 0.0},
+            {1.0, 0.0, 0.0, 0.0},
+            {1.0, 0.0, 0.0, 0.0},
+            //zakaz wiazdu ciężarówek
+            {0.0, 1.0, 0.0, 0.0},
+            {0.0, 1.0, 0.0, 0.0},
+            {0.0, 1.0, 0.0, 0.0},
+            {0.0, 1.0, 0.0, 0.0},
+            {0.0, 1.0, 0.0, 0.0},
+            // zakaz wjazdu
+            {0.0, 0.0, 1.0, 0.0},
+            {0.0, 0.0, 1.0, 0.0},
+            {0.0, 0.0, 1.0, 0.0},
+            {0.0, 0.0, 1.0, 0.0},
+            {0.0, 0.0, 1.0, 0.0},
+            // zakaz wjazdu motocykli
+            {0.0, 0.0, 0.0, 1.0},
+            {0.0, 0.0, 0.0, 1.0},
+            {0.0, 0.0, 0.0, 1.0},
+            {0.0, 0.0, 0.0, 1.0},
+            {0.0, 0.0, 0.0, 1.0}
     };
 
     public static BasicMLDataSet build(){
         List<double[]> readedPictures = INPUT_DATA.stream()
-                .map(path -> new File(path))
-                .map(file -> readImage(file))
-                .map(image -> convertTo2DWithoutUsingGetRGB(image))
-                .map(arrayOfInts -> Ints.concat(arrayOfInts))
-                .map(flatArrayOfInts -> convertToDoublesAndShrinkValues(flatArrayOfInts))
+                .map(File::new)
+                .map(TrainingSetBuilder::readImage)
+                .map(TrainingSetBuilder::convertTo2DWithoutUsingGetRGB)
+                .map(Ints::concat)
+                .map(TrainingSetBuilder::convertToDoublesAndShrinkValues)
                 .collect(Collectors.toList());
 
         return new BasicMLDataSet(to2dArray(readedPictures), IDEAL);
-    }
-
-    private static double[][] to2dArray(List<double[]> list) {
-        double[][] matrix=new double[list.size()][];
-        matrix=list.toArray(matrix);
-        return matrix;
-    }
-
-    private static double[] convertToDoublesAndShrinkValues(int[] flatArrayOfInts) {
-        return Arrays.stream(flatArrayOfInts)
-                .asDoubleStream()
-                .map(pixel -> pixel/(256*256*256))
-                .boxed()
-                .mapToDouble(Double::doubleValue)
-                .toArray();
     }
 
     private static BufferedImage readImage(File file) {
@@ -81,6 +101,12 @@ public class TrainingSetBuilder {
         return null;
     }
 
+    /**
+     * POżyczone z internetów nie wiem jak działa ale działa :P
+     * W dodatku zapierdziela jak durne w porównaniu z pobieramiem każdego pixla osobno.
+     * @param image
+     * @return
+     */
     private static int[][] convertTo2DWithoutUsingGetRGB(BufferedImage image) {
 
         final byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
@@ -122,5 +148,24 @@ public class TrainingSetBuilder {
         }
 
         return result;
+    }
+
+    private static double[] convertToDoublesAndShrinkValues(int[] flatArrayOfInts) {
+        return Arrays.stream(flatArrayOfInts)
+                .asDoubleStream()
+                .map(TrainingSetBuilder::normalizePixelValue)
+                .boxed()
+                .mapToDouble(Double::doubleValue)
+                .toArray();
+    }
+
+    private static double normalizePixelValue(double pixel) {
+        return pixel/(256*256*256);
+    }
+
+    private static double[][] to2dArray(List<double[]> list) {
+        double[][] matrix=new double[list.size()][];
+        matrix=list.toArray(matrix);
+        return matrix;
     }
 }
