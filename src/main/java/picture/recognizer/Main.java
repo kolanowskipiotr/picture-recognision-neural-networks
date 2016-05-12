@@ -40,7 +40,7 @@ public class Main {
     }
 
     private static Optional<BasicNetwork> getNetwork(ApplicationConfiguration appConfig) {
-        Optional<BasicNetwork> networkOpt = null;
+        Optional<BasicNetwork> networkOpt;
         if(StringUtils.isNoneBlank(appConfig.getLoadNetworkPath())) {
             networkOpt = NetworkPersister.loadNetwork(appConfig.getLoadNetworkPath());
         } else {
