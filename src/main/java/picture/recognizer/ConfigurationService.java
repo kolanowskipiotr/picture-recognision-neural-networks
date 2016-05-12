@@ -1,10 +1,10 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
-import road.signs.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.ApplicationConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class ConfigurationService {
             String json = FileUtils.readFileToString(new File(SETUP_CFG_FILE_PATH), SETUP_CGF_FILE_ENCODING);
             return Optional.ofNullable(new Gson().fromJson(json, ApplicationConfiguration.class));
         } catch (IOException e) {
-            System.out.println("[ERROR] No configuration found! Expected config file: " + SETUP_CFG_FILE_PATH);
+            System.out.println("\n[ERROR] No configuration found! Expected config file: " + SETUP_CFG_FILE_PATH);
             e.printStackTrace();
         }
         return Optional.empty();

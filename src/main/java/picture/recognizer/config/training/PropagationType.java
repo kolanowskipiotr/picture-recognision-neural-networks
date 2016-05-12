@@ -1,4 +1,4 @@
-package road.signs.recognizer.config.training;
+package picture.recognizer.config.training;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;

@@ -1,4 +1,4 @@
-package road.signs.recognizer.config.network.architecture;
+package picture.recognizer.config.network.architecture;
 
 import java.util.List;
 

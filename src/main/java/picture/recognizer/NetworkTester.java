@@ -1,11 +1,11 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import road.signs.recognizer.config.ApplicationConfiguration;
-import road.signs.recognizer.config.testing.TestingData;
+import picture.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.testing.TestingData;
 
 import java.util.List;
 import java.util.Optional;

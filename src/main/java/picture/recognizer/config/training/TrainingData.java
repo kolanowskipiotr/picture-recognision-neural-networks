@@ -1,4 +1,4 @@
-package road.signs.recognizer.config.training;
+package picture.recognizer.config.training;
 
 import java.util.List;
 

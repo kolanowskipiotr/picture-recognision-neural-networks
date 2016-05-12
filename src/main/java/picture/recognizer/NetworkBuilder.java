@@ -1,9 +1,9 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import road.signs.recognizer.config.network.architecture.LayerConfiguration;
-import road.signs.recognizer.config.network.architecture.NetworkArchitecture;
+import picture.recognizer.config.network.architecture.LayerConfiguration;
+import picture.recognizer.config.network.architecture.NetworkArchitecture;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +57,7 @@ public class NetworkBuilder {
     }
 
     private static void dislayValidationError() {
-        System.out.println("[Error] NetworkArchitecture not valid!");
+        System.out.println("\n[Error] NetworkArchitecture not valid!");
     }
 
 }

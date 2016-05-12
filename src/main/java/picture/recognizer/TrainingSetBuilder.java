@@ -1,8 +1,8 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import com.google.common.primitives.Ints;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import road.signs.recognizer.config.training.TrainingPair;
+import picture.recognizer.config.training.TrainingPair;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

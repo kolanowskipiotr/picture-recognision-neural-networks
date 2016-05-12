@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>neural.networks</groupId>
-    <artifactId>road.signs.recognizer</artifactId>
+    <artifactId>picture.recognizer</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Rsoad signs recognizer</name>
+    <name>Picture recognizer</name>
 
     <build>
         <plugins>
@@ -24,7 +24,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>road.signs.recognizer.Main</mainClass>
+                    <mainClass>picture.recognizer.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -41,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>road.signs.recognizer.Main</mainClass>
+                            <mainClass>picture.recognizer.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

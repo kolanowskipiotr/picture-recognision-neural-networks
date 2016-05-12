@@ -1,9 +1,9 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.encog.Encog;
 import org.encog.neural.networks.BasicNetwork;
-import road.signs.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.ApplicationConfiguration;
 
 import java.util.Optional;
 
@@ -23,11 +23,11 @@ public class Main {
                 workWithNetwork(appConfigOpt.get(), networkOpt.get());
             } else {
 
-                System.out.println("[ERROR] Network load or creation failed!");
+                System.out.println("\n[ERROR] Network load or creation failed!");
             }
         } else{
 
-            System.out.println("[ERROR] No configuration file!");
+            System.out.println("\n[ERROR] No configuration file!");
             //ConfigurationService.saveConfiguration(new ApplicationConfiguration());
         }
         

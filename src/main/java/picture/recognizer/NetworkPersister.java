@@ -1,8 +1,8 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.obj.SerializeObject;
-import road.signs.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.ApplicationConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class NetworkPersister {
         try {
             SerializeObject.save(new File(FILENAME), network);
         } catch (IOException e1) {
-            System.out.println("[Error] Saving network FAILED!");
+            System.out.println("\n[Error] Saving network FAILED!");
             e1.printStackTrace();
         }
     }

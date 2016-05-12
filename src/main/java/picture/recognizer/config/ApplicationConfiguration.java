@@ -1,8 +1,8 @@
-package road.signs.recognizer.config;
+package picture.recognizer.config;
 
-import road.signs.recognizer.config.network.architecture.NetworkArchitecture;
-import road.signs.recognizer.config.testing.TestingData;
-import road.signs.recognizer.config.training.TrainingData;
+import picture.recognizer.config.training.TrainingData;
+import picture.recognizer.config.network.architecture.NetworkArchitecture;
+import picture.recognizer.config.testing.TestingData;
 
 /**
  * Created by Basia on 11.05.16.

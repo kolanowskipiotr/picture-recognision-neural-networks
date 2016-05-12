@@ -1,10 +1,10 @@
-package road.signs.recognizer;
+package picture.recognizer;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
-import road.signs.recognizer.config.ApplicationConfiguration;
-import road.signs.recognizer.config.training.TrainingData;
+import picture.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.training.TrainingData;
 
 import java.util.Optional;
 
@@ -70,6 +70,6 @@ public class NetworkTrainer {
     }
 
     private static void displayDataValidationError() {
-        System.out.println("[ERROR] TrainingData not valid!");
+        System.out.println("\n[ERROR] TrainingData not valid!");
     }
 }
