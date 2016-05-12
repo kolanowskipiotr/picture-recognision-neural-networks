@@ -1,4 +1,4 @@
-package picture.recognizer.config.network.architecture;
+package picture.recognizer.config.dto.network.architecture;
 
 /**
  * Created by Basia on 11.05.16.

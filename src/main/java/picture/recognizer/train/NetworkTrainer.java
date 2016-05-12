@@ -1,10 +1,10 @@
-package picture.recognizer;
+package picture.recognizer.train;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
-import picture.recognizer.config.ApplicationConfiguration;
-import picture.recognizer.config.training.TrainingData;
+import picture.recognizer.config.dto.ApplicationConfiguration;
+import picture.recognizer.config.dto.training.TrainingData;
 
 import java.util.Optional;
 

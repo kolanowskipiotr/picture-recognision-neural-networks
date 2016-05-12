@@ -1,4 +1,4 @@
-package picture.recognizer.config.training;
+package picture.recognizer.config.dto.training;
 
 /**
  * Created by Basia on 11.05.16.

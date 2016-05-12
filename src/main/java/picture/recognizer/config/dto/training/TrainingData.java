@@ -1,4 +1,4 @@
-package picture.recognizer.config.training;
+package picture.recognizer.config.dto.training;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package picture.recognizer;
+package picture.recognizer.build;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import picture.recognizer.config.network.architecture.LayerConfiguration;
-import picture.recognizer.config.network.architecture.NetworkArchitecture;
+import picture.recognizer.config.dto.network.architecture.LayerConfiguration;
+import picture.recognizer.config.dto.network.architecture.NetworkArchitecture;
 
 import java.util.List;
 import java.util.Optional;

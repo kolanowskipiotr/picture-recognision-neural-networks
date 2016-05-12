@@ -1,11 +1,12 @@
-package picture.recognizer;
+package picture.recognizer.test;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import picture.recognizer.config.ApplicationConfiguration;
-import picture.recognizer.config.testing.TestingData;
+import picture.recognizer.config.dto.ApplicationConfiguration;
+import picture.recognizer.config.dto.testing.TestingData;
+import picture.recognizer.train.TrainingSetBuilder;
 
 import java.util.List;
 import java.util.Optional;

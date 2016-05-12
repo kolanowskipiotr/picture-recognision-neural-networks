@@ -1,6 +1,6 @@
-package picture.recognizer.config.testing;
+package picture.recognizer.config.dto.testing;
 
-import picture.recognizer.config.training.TrainingPair;
+import picture.recognizer.config.dto.training.TrainingPair;
 
 import java.util.List;
 

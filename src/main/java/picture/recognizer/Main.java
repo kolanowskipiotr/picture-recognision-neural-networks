@@ -3,7 +3,12 @@ package picture.recognizer;
 import org.apache.commons.lang3.StringUtils;
 import org.encog.Encog;
 import org.encog.neural.networks.BasicNetwork;
-import picture.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.build.NetworkBuilder;
+import picture.recognizer.config.dto.ApplicationConfiguration;
+import picture.recognizer.config.service.ConfigurationService;
+import picture.recognizer.persist.NetworkPersister;
+import picture.recognizer.test.NetworkTester;
+import picture.recognizer.train.NetworkTrainer;
 
 import java.util.Optional;
 

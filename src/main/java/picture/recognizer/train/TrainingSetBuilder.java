@@ -1,8 +1,8 @@
-package picture.recognizer;
+package picture.recognizer.train;
 
 import com.google.common.primitives.Ints;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import picture.recognizer.config.training.TrainingPair;
+import picture.recognizer.config.dto.training.TrainingPair;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

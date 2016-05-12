@@ -1,8 +1,8 @@
-package picture.recognizer;
+package picture.recognizer.persist;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.obj.SerializeObject;
-import picture.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.dto.ApplicationConfiguration;
 
 import java.io.File;
 import java.io.IOException;

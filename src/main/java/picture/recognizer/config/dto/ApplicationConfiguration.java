@@ -1,8 +1,8 @@
-package picture.recognizer.config;
+package picture.recognizer.config.dto;
 
-import picture.recognizer.config.training.TrainingData;
-import picture.recognizer.config.network.architecture.NetworkArchitecture;
-import picture.recognizer.config.testing.TestingData;
+import picture.recognizer.config.dto.network.architecture.NetworkArchitecture;
+import picture.recognizer.config.dto.training.TrainingData;
+import picture.recognizer.config.dto.testing.TestingData;
 
 /**
  * Created by Basia on 11.05.16.

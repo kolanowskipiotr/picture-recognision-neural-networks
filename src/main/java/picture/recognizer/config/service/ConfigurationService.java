@@ -1,10 +1,10 @@
-package picture.recognizer;
+package picture.recognizer.config.service;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
-import picture.recognizer.config.ApplicationConfiguration;
+import picture.recognizer.config.dto.ApplicationConfiguration;
 
 import java.io.File;
 import java.io.IOException;

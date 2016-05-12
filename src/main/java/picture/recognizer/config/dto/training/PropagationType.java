@@ -1,4 +1,4 @@
-package picture.recognizer.config.training;
+package picture.recognizer.config.dto.training;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
