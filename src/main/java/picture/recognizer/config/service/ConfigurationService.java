@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public class ConfigurationService {
 
-    private static final String SETUP_CFG_FILE_PATH = "setup.cfg";
+    private static final String SETUP_CFG_FILE_PATH = "setup.json";
     private static final Charset SETUP_CGF_FILE_ENCODING = Charsets.UTF_8;
 
     public static void saveConfiguration(ApplicationConfiguration applicationConfiguration){
