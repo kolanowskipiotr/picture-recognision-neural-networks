@@ -11,7 +11,7 @@
     "hiddenLayers": []
   },
   "loadNetworkPath": null,
-  "saveNetwork": false,
+  "saveNetwork": true,
   "trainingData": {
     "acceptedErrorLevel": 0.01,
     "propagationType": "ResilientPropagation",

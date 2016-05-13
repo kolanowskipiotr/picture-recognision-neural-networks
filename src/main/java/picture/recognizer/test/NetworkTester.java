@@ -8,8 +8,10 @@ import picture.recognizer.config.dto.ApplicationConfiguration;
 import picture.recognizer.config.dto.testing.TestingData;
 import picture.recognizer.train.TrainingSetBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Basia on 11.05.16.
@@ -34,15 +36,17 @@ public class NetworkTester {
         final MLData output = network.compute(queryData.getInput());
         System.out.println("Test: "
                 + "\n    network response ["+ getLabel(output.getData(), outputLabels) +"] = "
-                + round(output.getData(0)) + " "
-                + round(output.getData(1)) + " "
-                + round(output.getData(2)) + " "
-                + round(output.getData(3))
+                + neuronsValueToString(output.getData())
                 + "\n    should respond ["+ getLabel(queryData.getIdeal().getData(), outputLabels) +"] = "
-                + queryData.getIdeal().getData(0) + " "
-                + queryData.getIdeal().getData(1) + " "
-                + queryData.getIdeal().getData(2) + " "
-                + queryData.getIdeal().getData(3));
+                + neuronsValueToString(queryData.getIdeal().getData())
+        );
+    }
+
+    private static String neuronsValueToString(double[] neuronsValues) {
+        return Arrays.stream(neuronsValues).boxed()
+                .map(NetworkTester::round)
+                .map(d -> d.toString())
+                .collect(Collectors.joining(" "));
     }
 
     private static String getLabel(double[] data, List<String> outputLabels) {
@@ -59,6 +63,6 @@ public class NetworkTester {
     }
 
     private static double round(double number) {
-        return Math.round(number * 1000d) / 1000d;
+        return Math.round(number * 10000000d) / 10000000d;
     }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public class NetworkPersister {
 
-    private static final String FILENAME = "encogexample.ser";
+    private static final String FILENAME = "encog-nural-network.ser";
 
     public static void persist(ApplicationConfiguration appConfig, BasicNetwork network) {
         if(appConfig.isSaveNetwork()) {
