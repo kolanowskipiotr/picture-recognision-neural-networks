@@ -1,5 +1,6 @@
 package picture.recognizer.train;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -7,6 +8,9 @@ import picture.recognizer.config.dto.ApplicationConfiguration;
 import picture.recognizer.config.dto.training.TrainingData;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 /**
  * Created by Basia on 11.05.16.
@@ -39,19 +43,38 @@ public class NetworkTrainer {
     }
 
     private static void trainNetwork(BasicNetwork network, TrainingData trainingData, MLDataSet trainingSet) {
-        double[] results = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
+        double[] results = getLeriningProgressData(trainingData);
         int epoch = 1;
         Propagation trainer = builtNetworkTrainer(network, trainingSet, trainingData);
         do {
             trainer.iteration();
             displayTrainingErrorLevel(epoch, trainer.getError());
             epoch++;
-            results[epoch%3] = trainer.getError();
-        } while (results[0] > trainingData.getAcceptedErrorLevel() ||
-                results[1] > trainingData.getAcceptedErrorLevel() ||
-                results[2] > trainingData.getAcceptedErrorLevel());
+            results[epoch% getAcceptedErrorLevelNumberOfChecks(trainingData)] = trainer.getError();
+        } while (larningNotFinished(results, trainingData));
 
         trainer.finishTraining();
+    }
+
+    private static boolean larningNotFinished(double[] results, TrainingData trainingData) {
+        return DoubleStream.of(results)
+                .anyMatch(res -> res > trainingData.getAcceptedErrorLevel());
+    }
+
+    private static double[] getLeriningProgressData(TrainingData trainingData) {
+        return ArrayUtils.toPrimitive(
+                IntStream.range(0, getAcceptedErrorLevelNumberOfChecks(trainingData))
+                    .boxed()
+                    .map(i -> Double.MAX_VALUE)
+                    .collect(Collectors.toList())
+                    .toArray(new Double[getAcceptedErrorLevelNumberOfChecks(trainingData)])
+        );
+    }
+
+    private static int getAcceptedErrorLevelNumberOfChecks(TrainingData trainingData) {
+        return Optional.ofNullable(trainingData.getAcceptedErrorLevelNumberOfChecks())
+                .filter(numOfChecks -> numOfChecks > 0)
+                .orElse(1);
     }
 
     private static boolean isDataValid(TrainingData trainingData) {

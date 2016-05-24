@@ -14,6 +14,7 @@
   "saveNetwork": true,
   "trainingData": {
     "acceptedErrorLevel": 0.01,
+    "acceptedErrorLevelNumberOfChecks": 3,
     "propagationType": "ResilientPropagation",
     "theLearnRateForManhattanPropagation": 0.0,
     "trainingSet": [
