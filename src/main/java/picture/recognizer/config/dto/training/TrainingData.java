@@ -10,7 +10,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public class TrainingData {
 
     private double acceptedErrorLevel;
-
+    private int acceptedErrorLevelNumberOfChecks;
 
     /** taiej do tej pory używaliśy PropagationType.ResilientPropagation; ale dostępne wartości to:
      ManhattanPropagation
@@ -55,5 +55,13 @@ public class TrainingData {
 
     public void setAcceptedErrorLevel(double acceptedErrorLevel) {
         this.acceptedErrorLevel = acceptedErrorLevel;
+    }
+
+    public int getAcceptedErrorLevelNumberOfChecks() {
+        return acceptedErrorLevelNumberOfChecks;
+    }
+
+    public void setAcceptedErrorLevelNumberOfChecks(int acceptedErrorLevelNumberOfChecks) {
+        this.acceptedErrorLevelNumberOfChecks = acceptedErrorLevelNumberOfChecks;
     }
 }
