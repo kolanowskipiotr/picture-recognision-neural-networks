@@ -2,6 +2,8 @@ package picture.recognizer.train;
 
 import com.google.common.primitives.Ints;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import picture.recognizer.config.dto.testing.TestingData;
+import picture.recognizer.config.dto.training.TrainingData;
 import picture.recognizer.config.dto.training.TrainingPair;
 
 import javax.imageio.ImageIO;
@@ -18,21 +20,28 @@ import java.util.stream.Collectors;
  */
 public class TrainingSetBuilder {
 
-    public static BasicMLDataSet buildTestingSet(List<TrainingPair> testingData){
-        return build(getInputData(testingData), getIdealData(testingData));
+    public static BasicMLDataSet buildTestingSet(TestingData trainingData, boolean alphaChanelEnabled){
+        return build(getInputData(
+                trainingData.getTestingSet()),
+                getIdealData(trainingData.getTestingSet()),
+                alphaChanelEnabled);
     }
 
-    public static BasicMLDataSet buildTrainingSet(List<TrainingPair> trainingData){
-        return build(getInputData(trainingData), getIdealData(trainingData));
+    public static BasicMLDataSet buildTrainingSet(TrainingData trainingData, boolean alphaChanelEnabled){
+        return build(
+                getInputData(trainingData.getTrainingSet()),
+                getIdealData(trainingData.getTrainingSet()),
+                alphaChanelEnabled
+        );
     }
 
-    private static BasicMLDataSet build(List<String> inputData, double[][] ideal){
+    private static BasicMLDataSet build(List<String> inputData, double[][] ideal, boolean alphaChanelEnabled){
         List<double[]> readedPictures = inputData.stream()
                 .map(File::new)
                 .map(TrainingSetBuilder::readImage)
-                .map(TrainingSetBuilder::convertTo2DWithoutUsingGetRGB)
+                .map(image -> TrainingSetBuilder.convertTo2DWithoutUsingGetRGB(image, alphaChanelEnabled))
                 .map(Ints::concat)
-                .map(TrainingSetBuilder::convertToDoublesAndShrinkValues)
+                .map(flatArrayOfInts -> TrainingSetBuilder.convertToDoublesAndShrinkValues(flatArrayOfInts, alphaChanelEnabled))
                 .collect(Collectors.toList());
 
         return new BasicMLDataSet(to2dArray(readedPictures), ideal);
@@ -54,7 +63,7 @@ public class TrainingSetBuilder {
      * @param image
      * @return
      */
-    private static int[][] convertTo2DWithoutUsingGetRGB(BufferedImage image) {
+    private static int[][] convertTo2DWithoutUsingGetRGB(BufferedImage image, boolean alphaChanelEnabled) {
 
         final byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         final int width = image.getWidth();
@@ -81,7 +90,7 @@ public class TrainingSetBuilder {
             final int pixelLength = 3;
             for (int pixel = 0, row = 0, col = 0; pixel < pixels.length; pixel += pixelLength) {
                 int argb = 0;
-                //argb += -16777216; // 255 alpha
+                argb = handleAlpha(alphaChanelEnabled, argb);
                 argb += ((int) pixels[pixel] & 0xff); // blue
                 argb += (((int) pixels[pixel + 1] & 0xff) << 8); // green
                 argb += (((int) pixels[pixel + 2] & 0xff) << 16); // red
@@ -97,17 +106,24 @@ public class TrainingSetBuilder {
         return result;
     }
 
-    private static double[] convertToDoublesAndShrinkValues(int[] flatArrayOfInts) {
+    private static int handleAlpha(boolean alphaChanelEnabled, int argb) {
+        if(alphaChanelEnabled){
+            argb += -16777216; // 255 alpha
+        }
+        return argb;
+    }
+
+    private static double[] convertToDoublesAndShrinkValues(int[] flatArrayOfInts, boolean alphaChanelEnabled) {
         return Arrays.stream(flatArrayOfInts)
                 .asDoubleStream()
-                .map(TrainingSetBuilder::normalizePixelValue)
+                .map((pixel) -> TrainingSetBuilder.normalizePixelValue(pixel, alphaChanelEnabled))
                 .boxed()
                 .mapToDouble(Double::doubleValue)
                 .toArray();
     }
 
-    private static double normalizePixelValue(double pixel) {
-        return pixel/(256*256*256);
+    private static double normalizePixelValue(double pixel, boolean alphaChanelEnabled) {
+        return pixel/handleAlpha(alphaChanelEnabled, 256*256*256);
     }
 
     private static double[][] to2dArray(List<double[]> list) {

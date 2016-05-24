@@ -25,7 +25,7 @@ public class NetworkTester {
         if(testingDataOpt.isPresent()) {
 
             TestingData testingData = testingDataOpt.get();
-            MLDataSet testingSet = TrainingSetBuilder.buildTestingSet(testingData.getTestingSet());
+            MLDataSet testingSet = TrainingSetBuilder.buildTestingSet(testingData, appConfig.isAlphaChanelEnabled());
             testingSet.forEach(testingPair -> askNetwork(network, testingPair, testingData.getOutputLabels()));
         } else {
             System.out.println("Network was not tested");

@@ -12,6 +12,7 @@
   },
   "loadNetworkPath": null,
   "saveNetwork": true,
+  "alphaChanelEnabled": false,
   "trainingData": {
     "acceptedErrorLevel": 0.01,
     "propagationType": "ResilientPropagation",

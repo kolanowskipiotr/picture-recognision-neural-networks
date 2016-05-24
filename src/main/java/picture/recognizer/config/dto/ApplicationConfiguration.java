@@ -20,6 +20,9 @@ public class ApplicationConfiguration {
     //Jeśli nei będzie tych danych to aplikacja nie będzie testować sieci. Pozwala to na pominięcie tego kroku
     private TestingData testingData = new TestingData();
 
+    //jeśłi włączone od wagi piksela będzie odjęte -16777216
+    private boolean alphaChanelEnabled;
+
     public boolean isSaveNetwork() {
         return saveNetwork;
     }
@@ -58,5 +61,13 @@ public class ApplicationConfiguration {
 
     public TrainingData getTrainingData() {
         return trainingData;
+    }
+
+    public boolean isAlphaChanelEnabled() {
+        return alphaChanelEnabled;
+    }
+
+    public void setAlphaChanelEnabled(boolean alphaChanelEnabled) {
+        this.alphaChanelEnabled = alphaChanelEnabled;
     }
 }

@@ -20,17 +20,17 @@ public class NetworkTrainer {
         if(trainingDataOpt.isPresent()) {
 
             TrainingData trainingData = trainingDataOpt.get();
-            NetworkTrainer.doTraing(network, trainingData);
+            NetworkTrainer.doTraing(network, trainingData, appConfig);
         } else {
 
             System.out.println("No training for network");
         }
     }
 
-    private static void doTraing(BasicNetwork network, TrainingData trainingData){
+    private static void doTraing(BasicNetwork network, TrainingData trainingData, ApplicationConfiguration appConfig){
         if(isDataValid(trainingData)){
 
-            MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet(trainingData.getTrainingSet());
+            MLDataSet trainingSet = TrainingSetBuilder.buildTrainingSet(trainingData, appConfig.isAlphaChanelEnabled());
             trainNetwork(network, trainingData, trainingSet);
         }else{
 
